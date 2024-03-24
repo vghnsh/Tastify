@@ -6,11 +6,12 @@ import SearchByItems from './overview/SearchByItems';
 import Option from './overview/Option';
 import Back from 'react-native-vector-icons/AntDesign';
 import RecepieOfDay from './overview/RecipeOfDay';
+import RecipeList from './overview/RecipeList';
 
 const Home = ({navigation}) => {
   const [selectedOption, setSelectedOption] = React.useState('');
   return (
-    <ScrollView style={styles.container}>
+    <ScrollView style={styles.container} stickyHeaderIndices={[0]}>
       <Header navigation={navigation} />
       {selectedOption && (
         <TouchableOpacity onPress={() => setSelectedOption('')}>
@@ -24,6 +25,8 @@ const Home = ({navigation}) => {
       {selectedOption === '' && (
         <Option setSelectedOption={setSelectedOption} />
       )}
+
+      <RecipeList />
 
       <RecepieOfDay />
     </ScrollView>
