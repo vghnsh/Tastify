@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {View, StyleSheet, TouchableOpacity, ScrollView} from 'react-native';
 import Header from './overview/Header';
 import SearchByDish from './overview/SearchByDish';
@@ -7,8 +7,26 @@ import Option from './overview/Option';
 import Back from 'react-native-vector-icons/AntDesign';
 import RecepieOfDay from './overview/RecipeOfDay';
 import RecipeList from './overview/RecipeList';
+import {getRandomRecipeService} from '../../api/service';
+
+const fetchRandomRecipe = async ({setState}) => {
+  const number = 1; // Number of random recipes to retrieve
+  try {
+    const response = await getRandomRecipeService({number});
+    const randomRecipe = response.data?.recipes[0];
+    setState(randomRecipe);
+  } catch (error) {
+    console.error('Error fetching random recipe:', error);
+  }
+};
 
 const Home = ({navigation}) => {
+  const [randomRecipe, setRandomRecipe] = React.useState(null);
+  useEffect(() => {
+    fetchRandomRecipe({setState: setRandomRecipe});
+  }, []);
+
+  console.log(randomRecipe);
   const [selectedOption, setSelectedOption] = React.useState('');
   return (
     <ScrollView style={styles.container} stickyHeaderIndices={[0]}>
@@ -28,7 +46,7 @@ const Home = ({navigation}) => {
 
       <RecipeList />
 
-      <RecepieOfDay />
+      <RecepieOfDay navigation={navigation} data={randomRecipe} />
     </ScrollView>
   );
 };

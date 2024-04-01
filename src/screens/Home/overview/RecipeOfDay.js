@@ -3,27 +3,25 @@ import {
   Text,
   View,
   StyleSheet,
-  TextInput,
-  TouchableOpacity,
   ImageBackground,
+  TouchableOpacity,
 } from 'react-native';
-import Ionicons from 'react-native-vector-icons/FontAwesome';
 
-const RecepieOfDay = () => {
-  const imageUrl =
-    'https://www.deputy.com/uploads/2018/10/The-Most-Popular-Menu-Items-That-You-should-Consider-Adding-to-Your-Restaurant_Content-image1-min-1024x569.png';
+const RecepieOfDay = ({data, navigation}) => {
   return (
-    <View style={styles.container}>
-      <Text style={styles.chooseText}>Recipe of the day</Text>
-      <ImageBackground
-        source={{uri: imageUrl}}
-        style={styles.imageBackground}
-        imageStyle={styles.image}>
-        <View style={styles.overlay}>
-          <Text style={styles.text}>Akhiri pasta</Text>
-        </View>
-      </ImageBackground>
-    </View>
+    <TouchableOpacity onPress={() => navigation.navigate('Details', {data})}>
+      <View style={styles.container}>
+        <Text style={styles.chooseText}>Random recipe for you</Text>
+        <ImageBackground
+          source={{uri: data?.image}}
+          style={styles.imageBackground}
+          imageStyle={styles.image}>
+          <View style={styles.overlay}>
+            <Text style={styles.text}>{data?.title}</Text>
+          </View>
+        </ImageBackground>
+      </View>
+    </TouchableOpacity>
   );
 };
 

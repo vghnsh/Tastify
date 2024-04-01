@@ -6,7 +6,10 @@ import {
   StyleSheet,
   ScrollView,
   TouchableOpacity,
+  SafeAreaView,
 } from 'react-native';
+
+// import data from './data.json';
 
 const Bullet = () => <Text style={styles.bullet}>{'\u2022'}</Text>;
 
@@ -17,14 +20,17 @@ const BulletPoint = ({text}) => (
   </View>
 );
 
-const FoodDetailsScreen = () => {
+const FoodDetailsScreen = ({route}) => {
+  const {data} = route.params;
+
   const imageUrl =
     'https://www.deputy.com/uploads/2018/10/The-Most-Popular-Menu-Items-That-You-should-Consider-Adding-to-Your-Restaurant_Content-image1-min-1024x569.png';
   const [selectedTab, setSelectedTab] = useState('details');
 
   return (
+    // <SafeAreaView>
     <View style={styles.container}>
-      <Image source={{uri: imageUrl}} style={styles.image} />
+      <Image source={{uri: data?.image}} style={styles.image} />
       <View style={styles.tabContainer}>
         <TouchableOpacity
           style={[
@@ -54,33 +60,38 @@ const FoodDetailsScreen = () => {
       <ScrollView style={styles.content}>
         {selectedTab === 'details' && (
           <View>
-            <Text style={styles.title}>Food Name</Text>
-            <Text style={styles.description}>Description of the food.</Text>
-            <Text style={styles.price}>$9.99</Text>
+            <Text style={styles.title}>{data?.title}</Text>
+            <Text style={styles.description}>{data?.summary}</Text>
+            {/* <Text style={styles.price}>$9.99</Text> */}
           </View>
         )}
         {selectedTab === 'ingredients' && (
           <View style={styles.bulletWrap}>
-            <BulletPoint text={'sdsd'} />
-            <BulletPoint text={'sdsd'} />
-            <BulletPoint text={'sdsd'} />
-            <BulletPoint text={'sdsd'} />
-            <BulletPoint text={'sdsd'} />
+            {data?.extendedIngredients?.length > 0 ? (
+              data?.extendedIngredients?.map((ingredient, index) => (
+                <BulletPoint key={ingredient?.id} text={ingredient.original} />
+              ))
+            ) : (
+              <Text>No ingredient found!</Text>
+            )}
           </View>
         )}
         {selectedTab === 'instructions' && (
           <View>
             <View style={styles.bulletWrap}>
-              <BulletPoint text={'sdsd'} />
-              <BulletPoint text={'sdsd'} />
-              <BulletPoint text={'sdsd'} />
-              <BulletPoint text={'sdsd'} />
-              <BulletPoint text={'sdsd'} />
+              {data?.analyzedInstructions?.[0]?.steps?.length > 0 ? (
+                data?.analyzedInstructions?.[0]?.steps?.map(step => (
+                  <BulletPoint key={step?.number} text={step.step} />
+                ))
+              ) : (
+                <Text>No instructions found!</Text>
+              )}
             </View>
           </View>
         )}
       </ScrollView>
     </View>
+    // </SafeAreaView>
   );
 };
 

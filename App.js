@@ -7,6 +7,7 @@ import Saved from './src/screens/Saved';
 import Profile from './src/screens/Profile';
 import Details from './src/screens/Details'; // Import your details screen
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import {SafeAreaView} from 'react-native';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
