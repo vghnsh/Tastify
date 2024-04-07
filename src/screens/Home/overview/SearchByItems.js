@@ -8,8 +8,12 @@ import {
 } from 'react-native';
 import Ionicons from 'react-native-vector-icons/FontAwesome';
 
-const SearchByItems = () => {
-  const [text, setText] = React.useState('');
+const SearchByItems = ({
+  navigation,
+  searchText,
+  setSearchText,
+  onSearchItem,
+}) => {
   return (
     <View style={styles.container}>
       <View style={styles.searchInfoBox}>
@@ -22,15 +26,19 @@ const SearchByItems = () => {
       </View>
       <TextInput
         style={styles.input}
-        onChangeText={setText}
-        value={text}
+        onChangeText={setSearchText}
+        value={searchText}
         placeholder="Type here..."
       />
 
       <View>
         <TouchableOpacity
           activeOpacity={0.6}
-          onPress={() => console.log('Button pressed')}
+          onPress={() => {
+            if (searchText.length) {
+              onSearchItem({text: searchText});
+            }
+          }}
           style={styles.customButton}>
           <Text style={styles.customButtonText}>Generate recipe</Text>
         </TouchableOpacity>

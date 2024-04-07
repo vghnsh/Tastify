@@ -14,8 +14,14 @@ const getSerachByRecipesService = query =>
   axios.get(
     `https://api.spoonacular.com/recipes/complexSearch?apiKey=${API_KEY}&query=${query}`,
   );
+
+const getRecipeById = id =>
+  axios.get(
+    `https://api.spoonacular.com/recipes/${id}/information?apiKey=${API_KEY}`,
+  );
 export {
   getRandomRecipeService,
   getSerachByIngredientsService,
   getSerachByRecipesService,
+  getRecipeById,
 };

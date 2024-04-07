@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useState, useEffect} from 'react';
 import {
   View,
   Text,
@@ -8,6 +8,7 @@ import {
   TouchableOpacity,
   SafeAreaView,
 } from 'react-native';
+import {getRecipeById} from '../../api/service';
 
 // import data from './data.json';
 
@@ -26,11 +27,31 @@ const FoodDetailsScreen = ({route}) => {
   const imageUrl =
     'https://www.deputy.com/uploads/2018/10/The-Most-Popular-Menu-Items-That-You-should-Consider-Adding-to-Your-Restaurant_Content-image1-min-1024x569.png';
   const [selectedTab, setSelectedTab] = useState('details');
+  const [recipeData, setRecipeData] = useState(data);
+
+  useEffect(() => {
+    if (!data) {
+      // Make API call to fetch data using an ID
+      fetchDataById(route.params.id);
+    }
+  }, []);
+
+  const fetchDataById = async id => {
+    try {
+      // Make API call to fetch data using the ID
+      const response = await getRecipeById(id);
+      const recipes = response.data;
+      // Update the state with the new data
+      setRecipeData(recipes);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    }
+  };
 
   return (
     // <SafeAreaView>
     <View style={styles.container}>
-      <Image source={{uri: data?.image}} style={styles.image} />
+      <Image source={{uri: recipeData?.image}} style={styles.image} />
       <View style={styles.tabContainer}>
         <TouchableOpacity
           style={[
@@ -60,15 +81,15 @@ const FoodDetailsScreen = ({route}) => {
       <ScrollView style={styles.content}>
         {selectedTab === 'details' && (
           <View>
-            <Text style={styles.title}>{data?.title}</Text>
-            <Text style={styles.description}>{data?.summary}</Text>
+            <Text style={styles.title}>{recipeData?.title}</Text>
+            <Text style={styles.description}>{recipeData?.summary}</Text>
             {/* <Text style={styles.price}>$9.99</Text> */}
           </View>
         )}
         {selectedTab === 'ingredients' && (
           <View style={styles.bulletWrap}>
-            {data?.extendedIngredients?.length > 0 ? (
-              data?.extendedIngredients?.map((ingredient, index) => (
+            {recipeData?.extendedIngredients?.length > 0 ? (
+              recipeData?.extendedIngredients?.map((ingredient, index) => (
                 <BulletPoint key={ingredient?.id} text={ingredient.original} />
               ))
             ) : (
@@ -79,8 +100,8 @@ const FoodDetailsScreen = ({route}) => {
         {selectedTab === 'instructions' && (
           <View>
             <View style={styles.bulletWrap}>
-              {data?.analyzedInstructions?.[0]?.steps?.length > 0 ? (
-                data?.analyzedInstructions?.[0]?.steps?.map(step => (
+              {recipeData?.analyzedInstructions?.[0]?.steps?.length > 0 ? (
+                recipeData?.analyzedInstructions?.[0]?.steps?.map(step => (
                   <BulletPoint key={step?.number} text={step.step} />
                 ))
               ) : (

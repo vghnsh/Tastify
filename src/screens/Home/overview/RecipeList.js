@@ -1,20 +1,41 @@
 import React from 'react';
-import {Image, StyleSheet, Text, View} from 'react-native';
 
-const RecipeList = () => {
-  const imageUrl =
-    'https://www.deputy.com/uploads/2018/10/The-Most-Popular-Menu-Items-That-You-should-Consider-Adding-to-Your-Restaurant_Content-image1-min-1024x569.png';
+import {
+  Image,
+  StyleSheet,
+  Text,
+  View,
+  ActivityIndicator,
+  TouchableOpacity,
+} from 'react-native';
+
+const RecipeList = ({recipeList, searchText, isFetchingList, navigation}) => {
+  if (isFetchingList) {
+    return <ActivityIndicator size="large" color="#0000ff" />;
+  }
+  if (searchText.length === 0) {
+    return;
+  }
 
   return (
     <View style={styles.container}>
-      <View style={styles.singleItem}>
-        <Image source={{uri: imageUrl}} style={styles.image} />
-        <Text style={styles.text}>Food hai bhai kha le chal</Text>
-      </View>
-      <View style={styles.singleItem}>
-        <Image source={{uri: imageUrl}} style={styles.image} />
-        <Text style={styles.text}>Food hai bhai kha le chal</Text>
-      </View>
+      {recipeList?.recipes?.length > 0 ? (
+        <View>
+          {recipeList?.recipes?.map(recipe => (
+            <TouchableOpacity
+              onPress={() => navigation.navigate('Details', {id: recipe.id})}>
+              <View style={styles.singleItem}>
+                <Image source={{uri: recipe.image}} style={styles.image} />
+                <Text style={styles.text}>{recipe.title}</Text>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
+      ) : recipeList?.count === 0 ? (
+        <Text style={styles.center}>No data found</Text>
+      ) : (
+        ''
+      )}
     </View>
   );
 };
@@ -44,6 +65,9 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: 'black',
     fontFamily: 'Merriweather-Bold',
+  },
+  center: {
+    textAlign: 'center',
   },
 });
 export default RecipeList;
