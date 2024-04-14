@@ -17,6 +17,7 @@ import {
   getRandomRecipeService,
   getSerachByIngredientsService,
   getSerachByRecipesService,
+  searchByFilterService,
 } from '../../api/service';
 
 const fetchRandomRecipe = async ({setState}) => {
@@ -30,11 +31,11 @@ const fetchRandomRecipe = async ({setState}) => {
   }
 };
 
-const searchByDish = async ({text, setState, setIsFetchingList}) => {
+const searchByDish = async ({queryString, setState, setIsFetchingList}) => {
   const number = 1; // Number of random recipes to retrieve
   setIsFetchingList(true);
   try {
-    const response = await getSerachByRecipesService(text);
+    const response = await getSerachByRecipesService(queryString);
     const recipes = response.data.results;
     setState({recipes, count: recipes.length});
     setIsFetchingList(false);
@@ -44,16 +45,32 @@ const searchByDish = async ({text, setState, setIsFetchingList}) => {
   }
 };
 
-const searchByItem = async ({text, setState, setIsFetchingList}) => {
+const searchByItem = async ({queryString, setState, setIsFetchingList}) => {
   const number = 1; // Number of random recipes to retrieve
   setIsFetchingList(true);
   try {
-    const response = await getSerachByIngredientsService(text);
-    const recipes = response.data;
+    const response = await getSerachByIngredientsService(queryString);
+    const recipes = response.data.results;
     setState({recipes, count: recipes.length});
     setIsFetchingList(false);
   } catch (error) {
     setIsFetchingList(false);
+    console.error('Error fetching random recipe:', error);
+  }
+};
+
+const searchByFilter = async ({query, setState, setIsFetchingList}) => {
+  setIsFetchingList(true);
+  try {
+    const response = await searchByFilterService(query);
+    console.log('response.data', response.data.results);
+    const recipes = response.data.results;
+    setState({recipes, count: recipes.length});
+    setIsFetchingList(false);
+  } catch (error) {
+    setIsFetchingList(false);
+    console.log('response.data');
+
     console.error('Error fetching random recipe:', error);
   }
 };
@@ -64,6 +81,7 @@ const Home = ({navigation}) => {
   const [searchText, setSearchText] = useState('');
   const [recipeList, setRecipeList] = useState([]);
   const [isFetchingList, setIsFetchingList] = useState(false);
+  const [selectedFilters, setSelectedFilters] = useState({});
 
   useEffect(() => {
     fetchRandomRecipe({setState: setRandomRecipe});
@@ -76,16 +94,65 @@ const Home = ({navigation}) => {
   }, [searchText]);
 
   const handleSearchByDish = ({text}) => {
-    searchByDish({text, setState: setRecipeList, setIsFetchingList});
+    let queryObject = selectedFilters;
+    queryObject = {...selectedFilters, query: text};
+
+    const objectToQueryString = () => {
+      return Object.entries(queryObject)
+        .filter(([key, value]) => value !== '')
+        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+        .join('&');
+    };
+    const queryString = objectToQueryString();
+    searchByDish({queryString, setState: setRecipeList, setIsFetchingList});
   };
 
   const handleSearchByItem = ({text}) => {
-    searchByItem({text, setState: setRecipeList, setIsFetchingList});
+    let queryObject = selectedFilters;
+    queryObject = {...selectedFilters, includeIngredients: text};
+
+    const objectToQueryString = () => {
+      return Object.entries(queryObject)
+        .filter(([key, value]) => value !== '')
+        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+        .join('&');
+    };
+    const queryString = objectToQueryString();
+
+    searchByItem({queryString, setState: setRecipeList, setIsFetchingList});
+  };
+
+  const onFilterApply = filters => {
+    setSelectedFilters(filters);
+
+    let queryObject = filters;
+    if (selectedOption === 'dish') {
+      queryObject = {...filters, query: searchText};
+    } else if (selectedOption === 'items') {
+      queryObject = {...filters, includeIngredients: searchText};
+    }
+    const objectToQueryString = () => {
+      return Object.entries(queryObject)
+        .filter(([key, value]) => value !== '')
+        .map(([key, value]) => `${key}=${encodeURIComponent(value)}`)
+        .join('&');
+    };
+    const queryString = objectToQueryString();
+    searchByFilter({
+      query: queryString,
+      setState: setRecipeList,
+      setIsFetchingList,
+    });
   };
 
   return (
     <ScrollView style={styles.container} stickyHeaderIndices={[0]}>
-      <Header navigation={navigation} />
+      <Header
+        selectedFilters={selectedFilters}
+        setSelectedFilters={setSelectedFilters}
+        navigation={navigation}
+        onFilterApply={onFilterApply}
+      />
       {selectedOption && (
         <TouchableOpacity
           onPress={() => {
@@ -104,7 +171,6 @@ const Home = ({navigation}) => {
           searchText={searchText}
           setSearchText={setSearchText}
           onSearchByDish={handleSearchByDish}
-          // setRecipeList={setRecipeList}
         />
       )}
       {selectedOption === 'items' && (

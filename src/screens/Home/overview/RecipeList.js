@@ -9,12 +9,9 @@ import {
   TouchableOpacity,
 } from 'react-native';
 
-const RecipeList = ({recipeList, searchText, isFetchingList, navigation}) => {
+const RecipeList = ({recipeList, isFetchingList, navigation}) => {
   if (isFetchingList) {
     return <ActivityIndicator size="large" color="#0000ff" />;
-  }
-  if (searchText.length === 0) {
-    return;
   }
 
   return (

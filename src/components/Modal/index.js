@@ -1,12 +1,5 @@
 import React, {useState} from 'react';
-import {
-  View,
-  Text,
-  Modal,
-  TouchableOpacity,
-  StyleSheet,
-  TextInput,
-} from 'react-native';
+import {View, Text, Modal, TouchableOpacity, StyleSheet} from 'react-native';
 import CustomButton from '../Button';
 
 const FilterScreenModal = ({visible, onClose, onApply}) => {
@@ -15,12 +8,23 @@ const FilterScreenModal = ({visible, onClose, onApply}) => {
     cuisine: '',
     diet: '',
     intolerances: '',
-    instructionsRequired: false,
-    addRecipeInformation: false,
-    addRecipeNutrition: false,
     maxReadyTime: '',
-    sortByCalories: false,
   });
+
+  const toggleFilter = (filterName, value) => {
+    setFilters(prevFilters => {
+      const updatedFilters = {...prevFilters};
+
+      // Deselect the filter if it's already selected
+      if (updatedFilters[filterName] === value) {
+        updatedFilters[filterName] = '';
+      } else {
+        updatedFilters[filterName] = value;
+      }
+
+      return updatedFilters;
+    });
+  };
 
   const applyFilters = () => {
     onApply(filters);
@@ -34,8 +38,11 @@ const FilterScreenModal = ({visible, onClose, onApply}) => {
           <Text style={styles.filterTitle}>Time</Text>
           <View style={styles.filterButtons}>
             <TouchableOpacity
-              style={[styles.filterButton, styles.activeFilterButton]}
-              onPress={() => setFilters({...filters, maxReadyTime: '15'})}>
+              style={[
+                styles.filterButton,
+                filters.maxReadyTime === '15' && styles.activeFilterButton,
+              ]}
+              onPress={() => toggleFilter('maxReadyTime', '15')}>
               <Text style={styles.filterText}>Under 15 min</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -43,7 +50,7 @@ const FilterScreenModal = ({visible, onClose, onApply}) => {
                 styles.filterButton,
                 filters.maxReadyTime === '30' && styles.activeFilterButton,
               ]}
-              onPress={() => setFilters({...filters, maxReadyTime: '30'})}>
+              onPress={() => toggleFilter('maxReadyTime', '30')}>
               <Text style={styles.filterText}>Under 30 min</Text>
             </TouchableOpacity>
             <TouchableOpacity
@@ -51,7 +58,7 @@ const FilterScreenModal = ({visible, onClose, onApply}) => {
                 styles.filterButton,
                 filters.maxReadyTime === '45' && styles.activeFilterButton,
               ]}
-              onPress={() => setFilters({...filters, maxReadyTime: '45'})}>
+              onPress={() => toggleFilter('maxReadyTime', '45')}>
               <Text style={styles.filterText}>Under 45 min</Text>
             </TouchableOpacity>
           </View>
@@ -59,41 +66,47 @@ const FilterScreenModal = ({visible, onClose, onApply}) => {
           <Text style={styles.filterTitle}>Select Cuisine</Text>
           <View style={styles.filterButtons}>
             <TouchableOpacity
-              style={[styles.filterButton, styles.activeFilterButton]}
-              onPress={() => setFilters({...filters, maxReadyTime: '15'})}>
+              style={[
+                styles.filterButton,
+                filters.cuisine === 'indian' && styles.activeFilterButton,
+              ]}
+              onPress={() => toggleFilter('cuisine', 'indian')}>
               <Text style={styles.filterText}>Indian</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
                 styles.filterButton,
-                filters.maxReadyTime === '30' && styles.activeFilterButton,
+                filters.cuisine === 'italian' && styles.activeFilterButton,
               ]}
-              onPress={() => setFilters({...filters, maxReadyTime: '30'})}>
+              onPress={() => toggleFilter('cuisine', 'italian')}>
               <Text style={styles.filterText}>Italian</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
                 styles.filterButton,
-                filters.maxReadyTime === '45' && styles.activeFilterButton,
+                filters.cuisine === 'chinese' && styles.activeFilterButton,
               ]}
-              onPress={() => setFilters({...filters, maxReadyTime: '45'})}>
-              <Text style={styles.filterText}>Under 45 min</Text>
+              onPress={() => toggleFilter('cuisine', 'chinese')}>
+              <Text style={styles.filterText}>Chinese</Text>
             </TouchableOpacity>
           </View>
 
-          <Text style={styles.filterTitle}>Select your Food prefernce</Text>
+          <Text style={styles.filterTitle}>Select your Food preference</Text>
           <View style={styles.filterButtons}>
             <TouchableOpacity
-              style={[styles.filterButton, styles.activeFilterButton]}
-              onPress={() => setFilters({...filters, maxReadyTime: '15'})}>
+              style={[
+                styles.filterButton,
+                filters.diet === 'veg' && styles.activeFilterButton,
+              ]}
+              onPress={() => toggleFilter('diet', 'veg')}>
               <Text style={styles.filterText}>Veg</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
                 styles.filterButton,
-                filters.maxReadyTime === '30' && styles.activeFilterButton,
+                filters.diet === 'nonveg' && styles.activeFilterButton,
               ]}
-              onPress={() => setFilters({...filters, maxReadyTime: '30'})}>
+              onPress={() => toggleFilter('diet', 'nonveg')}>
               <Text style={styles.filterText}>Non veg</Text>
             </TouchableOpacity>
           </View>
@@ -101,24 +114,27 @@ const FilterScreenModal = ({visible, onClose, onApply}) => {
           <Text style={styles.filterTitle}>Choose protein intake</Text>
           <View style={styles.filterButtons}>
             <TouchableOpacity
-              style={[styles.filterButton, styles.activeFilterButton]}
-              onPress={() => setFilters({...filters, maxReadyTime: '15'})}>
+              style={[
+                styles.filterButton,
+                filters.proteinIntake === 'low' && styles.activeFilterButton,
+              ]}
+              onPress={() => toggleFilter('proteinIntake', 'low')}>
               <Text style={styles.filterText}>Low</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
                 styles.filterButton,
-                filters.maxReadyTime === '30' && styles.activeFilterButton,
+                filters.proteinIntake === 'medium' && styles.activeFilterButton,
               ]}
-              onPress={() => setFilters({...filters, maxReadyTime: '30'})}>
+              onPress={() => toggleFilter('proteinIntake', 'medium')}>
               <Text style={styles.filterText}>Medium</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
                 styles.filterButton,
-                filters.maxReadyTime === '45' && styles.activeFilterButton,
+                filters.proteinIntake === 'high' && styles.activeFilterButton,
               ]}
-              onPress={() => setFilters({...filters, maxReadyTime: '45'})}>
+              onPress={() => toggleFilter('proteinIntake', 'high')}>
               <Text style={styles.filterText}>High</Text>
             </TouchableOpacity>
           </View>
@@ -126,32 +142,32 @@ const FilterScreenModal = ({visible, onClose, onApply}) => {
           <Text style={styles.filterTitle}>Any allergies</Text>
           <View style={styles.filterButtons}>
             <TouchableOpacity
-              style={[styles.filterButton, styles.activeFilterButton]}
-              onPress={() => setFilters({...filters, maxReadyTime: '15'})}>
+              style={[
+                styles.filterButton,
+                filters.intolerances === 'dairy' && styles.activeFilterButton,
+              ]}
+              onPress={() => toggleFilter('intolerances', 'dairy')}>
               <Text style={styles.filterText}>Dairy</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
                 styles.filterButton,
-                filters.maxReadyTime === '30' && styles.activeFilterButton,
+                filters.intolerances === 'soy' && styles.activeFilterButton,
               ]}
-              onPress={() => setFilters({...filters, maxReadyTime: '30'})}>
+              onPress={() => toggleFilter('intolerances', 'soy')}>
               <Text style={styles.filterText}>Soy</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={[
                 styles.filterButton,
-                filters.maxReadyTime === '45' && styles.activeFilterButton,
+                filters.intolerances === 'egg' && styles.activeFilterButton,
               ]}
-              onPress={() => setFilters({...filters, maxReadyTime: '45'})}>
+              onPress={() => toggleFilter('intolerances', 'egg')}>
               <Text style={styles.filterText}>Egg</Text>
             </TouchableOpacity>
           </View>
 
-          {/* Add more filter inputs for diet, intolerances, etc. */}
-          <TouchableOpacity onPress={applyFilters}>
-            <CustomButton title="Apply Filters" />
-          </TouchableOpacity>
+          <CustomButton onPress={applyFilters} title="Apply Filters" />
         </View>
         <TouchableOpacity onPress={onClose} style={styles.closeButton}>
           <Text>Close</Text>

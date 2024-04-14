@@ -3,27 +3,32 @@ import {Text, View, StyleSheet, TouchableOpacity} from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import FilterScreenModal from '../../../components/Modal';
 
-const Header = ({navigation}) => {
+const Header = ({
+  selectedFilters,
+  setSelectedFilters,
+  navigation,
+  searchWithFilter,
+  onFilterApply,
+}) => {
   const [modalVisible, setModalVisible] = useState(false);
-  const [selectedFilters, setSelectedFilters] = useState({});
+  const allFieldsEmpty = Object.values(selectedFilters).every(
+    value => value === '' || value === false,
+  );
+  console.log(allFieldsEmpty, selectedFilters);
 
-  const handleApplyFilters = filters => {
-    // Process the selected filters
-    setSelectedFilters(filters);
-  };
   return (
     <View style={styles.header}>
       <Text style={styles.headerText}>Not sure what to cook tonight?</Text>
       <FilterScreenModal
         visible={modalVisible}
         onClose={() => setModalVisible(false)}
-        onApply={handleApplyFilters}
+        onApply={onFilterApply}
       />
       <TouchableOpacity
         style={styles.iconContainer}
         onPress={() => setModalVisible(true)}>
         <Ionicons name="filter" size={30} color="black" />
-        <View style={styles.redDot}></View>
+        {!allFieldsEmpty && <View style={styles.redDot}></View>}
       </TouchableOpacity>
     </View>
   );
