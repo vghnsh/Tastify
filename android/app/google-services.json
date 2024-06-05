@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "154502001964",
+    "project_id": "tastify-13dce",
+    "storage_bucket": "tastify-13dce.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:154502001964:android:0f5d805fb3da40fde26889",
+        "android_client_info": {
+          "package_name": "com.dietbook"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAeB08ZmdFp3G59h2BLNliWyGdt5WuC09Y"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

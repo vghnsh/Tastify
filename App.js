@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import {NavigationContainer} from '@react-navigation/native';
 import {createStackNavigator} from '@react-navigation/stack';
@@ -7,7 +7,8 @@ import Saved from './src/screens/Saved';
 import Profile from './src/screens/Profile';
 import Details from './src/screens/Details'; // Import your details screen
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import {SafeAreaView} from 'react-native';
+import messaging from '@react-native-firebase/messaging';
+import {Alert} from 'react-native';
 
 const Tab = createBottomTabNavigator();
 const Stack = createStackNavigator();
@@ -72,6 +73,27 @@ function TabNavigator({navigation}) {
 }
 
 function App() {
+  const getToken = async () => {
+    try {
+      console.log('token', 'getting token');
+      const value = await messaging()?.getToken();
+      console.log('token', value);
+    } catch (e) {
+      console.error(e);
+    }
+  };
+  useEffect(() => {
+    getToken();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = messaging().onMessage(async remoteMessage => {
+      Alert.alert('A new FCM message arrived!', JSON.stringify(remoteMessage));
+    });
+
+    return unsubscribe;
+  }, []);
+
   return (
     <NavigationContainer>
       <Stack.Navigator>

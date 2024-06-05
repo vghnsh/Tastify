@@ -14,7 +14,6 @@ const Header = ({
   const allFieldsEmpty = Object.values(selectedFilters).every(
     value => value === '' || value === false,
   );
-  console.log(allFieldsEmpty, selectedFilters);
 
   return (
     <View style={styles.header}>

@@ -23,7 +23,7 @@ import {
 const fetchRandomRecipe = async ({setState}) => {
   const number = 1; // Number of random recipes to retrieve
   try {
-    // const response = await getRandomRecipeService({number});
+    const response = await getRandomRecipeService({number});
     const randomRecipe = response.data?.recipes[0];
     setState(randomRecipe);
   } catch (error) {
@@ -63,7 +63,6 @@ const searchByFilter = async ({query, setState, setIsFetchingList}) => {
   setIsFetchingList(true);
   try {
     const response = await searchByFilterService(query);
-    console.log('response.data', response.data.results);
     const recipes = response.data.results;
     setState({recipes, count: recipes.length});
     setIsFetchingList(false);
@@ -192,9 +191,9 @@ const Home = ({navigation}) => {
         navigation={navigation}
       />
 
-      {/* {!selectedOption && (
+      {!selectedOption && (
         <RecepieOfDay navigation={navigation} data={randomRecipe} />
-      )} */}
+      )}
     </ScrollView>
   );
 };
